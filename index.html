@@ -1,486 +1,340 @@
 <!DOCTYPE html>
 <html lang="ckb" dir="rtl">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Mam Pola | Domino & Komkan</title>
-  
-  <link rel="manifest" href="data:application/manifest+json;utf8,{
-    %22name%22:%22Domino%20Mam%20Pola%22,
-    %22short_name%22:%22Domino%22,
-    %22start_url%22:%22.%22,
-    %22display%22:%22standalone%22,
-    %22background_color%22:%22%23121212%22,
-    %22theme_color%22:%22%23121212%22
-  }">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mam Pola - ژمارەی دۆمینە</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
 
-  <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      font-family: system-ui, -apple-system, sans-serif;
-      touch-action: manipulation;
-      user-select: none;
-      -webkit-user-select: none;
-      -webkit-touch-callout: none;
-    }
+        body {
+            background-color: #121212;
+            color: #ffffff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 15px;
+        }
 
-    body {
-      background-color: #121212;
-      color: #fff;
-      display: flex;
-      justify-content: center;
-      padding: 10px;
-      overflow-x: hidden;
-    }
+        .container {
+            width: 100%;
+            max-width: 450px;
+            background-color: #1e1e1e;
+            border-radius: 16px;
+            padding: 15px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+        }
 
-    .app {
-      width: 100%;
-      max-width: 420px;
-      text-align: center;
-    }
+        .header {
+            background-color: #2a2a2a;
+            border-radius: 12px;
+            padding: 12px;
+            text-align: center;
+            font-weight: bold;
+            font-size: 1.1rem;
+            color: #ffcc00;
+            margin-bottom: 15px;
+            border: 1px solid #333;
+        }
 
-    /* Header */
-    .header {
-      background: #1e1e1e;
-      padding: 10px 14px;
-      border-radius: 14px;
-      margin-bottom: 10px;
-      border: 1px solid #333;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-    }
-    .developer-name { font-size: 18px; font-weight: bold; color: #f1c40f; }
-    .phone-number { font-size: 13px; color: #3498db; direction: ltr; font-weight: bold; }
+        .mode-buttons {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
 
-    /* Mode Switcher */
-    .mode-switch {
-      display: flex;
-      gap: 8px;
-      margin-bottom: 12px;
-    }
-    .mode-btn {
-      flex: 1;
-      padding: 10px;
-      border-radius: 10px;
-      border: 1px solid #444;
-      background: #222;
-      color: #aaa;
-      font-weight: bold;
-      font-size: 15px;
-      cursor: pointer;
-    }
-    .mode-btn.active {
-      background: #f1c40f;
-      color: #121212;
-      border-color: #f1c40f;
-    }
+        .mode-btn {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 10px;
+            background-color: #333;
+            color: #fff;
+            font-weight: bold;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: 0.2s;
+        }
 
-    /* Setup Screen */
-    .setup-card {
-      background: #1e1e1e;
-      padding: 20px;
-      border-radius: 16px;
-      border: 1px solid #333;
-    }
-    .setup-card input {
-      width: 100%;
-      padding: 14px;
-      margin: 10px 0;
-      border-radius: 12px;
-      border: 1px solid #333;
-      background: #2a2a2a;
-      color: #fff;
-      font-size: 16px;
-      text-align: center;
-    }
-    .btn-main {
-      width: 100%;
-      padding: 14px;
-      border: none;
-      border-radius: 12px;
-      background: #27ae60;
-      color: #fff;
-      font-weight: bold;
-      font-size: 16px;
-      cursor: pointer;
-      margin-top: 10px;
-    }
+        .mode-btn.active {
+            background-color: #ffcc00;
+            color: #000;
+        }
 
-    .hidden { display: none !important; }
+        .teams-container {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
 
-    /* Score Header */
-    .scores-header {
-      display: flex;
-      gap: 10px;
-      margin-bottom: 12px;
-    }
-    .score-box {
-      flex: 1;
-      background: #1e1e1e;
-      border-radius: 12px;
-      padding: 8px 12px;
-      border: 2px solid #333;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-    .score-num { font-size: 26px; font-weight: bold; }
-    .score-box.team1 { border-color: #e74c3c; color: #fff; }
-    .score-box.team2 { border-color: #3498db; color: #fff; }
+        .team-box {
+            flex: 1;
+            background-color: #262626;
+            border-radius: 12px;
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
 
-    /* Board */
-    .board {
-      display: flex;
-      gap: 10px;
-    }
-    .team-col {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
+        .team-box.hama { border: 2px solid #0088cc; }
+        .team-box.pola { border: 2px solid #e53935; }
 
-    /* Domino Buttons */
-    .btn-row {
-      display: flex;
-      gap: 4px;
-    }
-    .btn-row button {
-      flex: 1;
-      padding: 8px 0;
-      border: none;
-      border-radius: 6px;
-      font-weight: bold;
-      font-size: 13px;
-      color: white;
-      cursor: pointer;
-    }
-    .btn-p5 { background: #27ae60; }
-    .btn-p10 { background: #2ecc71; }
-    .btn-m5 { background: #e74c3c; }
-    .btn-m10 { background: #c0392b; }
+        .team-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 1.1rem;
+            font-weight: bold;
+            padding: 5px;
+        }
 
-    /* Domino Grid Box */
-    .grid-box {
-      background: #1e1e1e;
-      border-radius: 12px;
-      padding: 8px;
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      grid-template-rows: repeat(2, 1fr);
-      gap: 6px;
-      border: 2px solid #333;
-    }
-    .team1 .grid-box { border-color: #e74c3c; }
-    .team2 .grid-box { border-color: #3498db; }
+        .score-display {
+            font-size: 1.6rem;
+        }
 
-    .cell {
-      aspect-ratio: 1;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 18px;
-      font-weight: bold;
-      color: #fff;
-    }
-    .team1 .cell { background: #e74c3c; }
-    .team2 .cell { background: #3498db; }
+        .action-btn {
+            width: 100%;
+            padding: 10px;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 0.95rem;
+            transition: opacity 0.2s;
+        }
 
-    /* Komkan Layout */
-    .komkan-btns {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 5px;
-    }
-    .komkan-btns button {
-      padding: 8px 0;
-      border: none;
-      border-radius: 6px;
-      font-weight: bold;
-      font-size: 13px;
-      color: #fff;
-      background: #333;
-      cursor: pointer;
-    }
-    .komkan-btns button.special { background: #d35400; }
-    .komkan-btns button.undo { background: #7f8c8d; grid-column: span 2; }
+        .action-btn:active { opacity: 0.7; }
+        .btn-custom { background-color: #333; color: #fff; }
+        .btn-tarqa { background-color: #ff9800; color: #000; }
+        .btn-undo { background-color: #455a64; color: #fff; }
 
-    .komkan-list {
-      background: #1e1e1e;
-      border-radius: 12px;
-      padding: 10px;
-      border: 1px solid #333;
-      min-height: 200px;
-      max-height: 320px;
-      overflow-y: auto;
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-    }
-    .komkan-item {
-      background: #2a2a2a;
-      padding: 8px;
-      border-radius: 8px;
-      font-size: 15px;
-      font-weight: bold;
-      display: flex;
-      justify-content: space-between;
-    }
-  </style>
+        .history-box {
+            height: 150px;
+            background-color: #1a1a1a;
+            border-radius: 8px;
+            padding: 8px;
+            overflow-y: auto;
+            font-size: 0.85rem;
+            color: #aaa;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .reset-btn {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 10px;
+            background-color: #333;
+            color: #fff;
+            font-weight: bold;
+            margin-top: 15px;
+            cursor: pointer;
+        }
+
+        /* Modal / Pop-up for Tarqa & Custom Point */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.8);
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+        }
+
+        .modal-content {
+            background: #262626;
+            padding: 20px;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 350px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .modal-content input {
+            padding: 10px;
+            border-radius: 6px;
+            border: 1px solid #444;
+            background: #121212;
+            color: #fff;
+            font-size: 1rem;
+            text-align: center;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .modal-actions button {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 6px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .btn-confirm { background: #4caf50; color: #fff; }
+        .btn-cancel { background: #f44336; color: #fff; }
+    </style>
 </head>
 <body>
 
-  <div class="app">
+<div class="container">
     <div class="header">
-      <span style="font-size:18px;">☀️</span>
-      <span class="developer-name">Mam Pola</span>
-      <span class="phone-number">07514807205</span>
+        07514807205 Mam Pola ☀️
     </div>
 
-    <div class="mode-switch">
-      <button class="mode-btn active" id="btn-mode-domino" onclick="switchMode('domino')">دۆمینە</button>
-      <button class="mode-btn" id="btn-mode-komkan" onclick="switchMode('komkan')">کۆمکان</button>
+    <div class="mode-buttons">
+        <button class="mode-btn active" id="mode-komkan">کۆمکان</button>
+        <button class="mode-btn" id="mode-domina">دۆمینه</button>
     </div>
 
-    <div id="setup-screen" class="setup-card">
-      <input type="text" id="t1-input" placeholder="ناوی گرووپی یەکەم" value="Pola">
-      <input type="text" id="t2-input" placeholder="ناوی گرووپی دووەم" value="Hama">
-      <button class="btn-main" onclick="startGame()">یاری نوێ</button>
+    <div class="teams-container">
+        <!-- Team 1 -->
+        <div class="team-box hama">
+            <div class="team-header">
+                <span>Hama</span>
+                <span class="score-display" id="score-1">0</span>
+            </div>
+            <button class="action-btn btn-custom" onclick="openCustomModal(1)">+ خاڵ...</button>
+            <button class="action-btn btn-tarqa" onclick="openTarqaModal(1)">🔲 تەرقە</button>
+            <button class="action-btn btn-undo" onclick="undo(1)">↩ پاشگەزبوونەوە</button>
+            <div class="history-box" id="history-1">هیچ خاڵێک نییە</div>
+        </div>
+
+        <!-- Team 2 -->
+        <div class="team-box pola">
+            <div class="team-header">
+                <span>Pola</span>
+                <span class="score-display" id="score-2">0</span>
+            </div>
+            <button class="action-btn btn-custom" onclick="openCustomModal(2)">+ خاڵ...</button>
+            <button class="action-btn btn-tarqa" onclick="openTarqaModal(2)">🔲 تەرقە</button>
+            <button class="action-btn btn-undo" onclick="undo(2)">↩ پاشگەزبوونەوە</button>
+            <div class="history-box" id="history-2">هیچ خاڵێک نییە</div>
+        </div>
     </div>
 
-    <div id="game-screen" class="hidden">
-      
-      <div class="scores-header">
-        <div class="score-box team1">
-          <span class="score-num" id="s1">0</span>
-          <span id="name1">Pola</span>
+    <button class="reset-btn" onclick="resetGame()">یارییەکی تر</button>
+</div>
+
+<!-- Modal for Tarqa -->
+<div class="modal" id="tarqaModal">
+    <div class="modal-content">
+        <h3 id="tarqaTitle" style="text-align: center;">تەرقە</h3>
+        <p style="font-size:0.9rem; color:#ccc; text-align:center;">خاڵی دەستی گروپی بەرامبەر بنووسە:</p>
+        <input type="number" id="opposingScoreInput" placeholder="خاڵی بەرامبەر">
+        <div class="modal-actions">
+            <button class="btn-confirm" onclick="confirmTarqa()">تۆمارکردن</button>
+            <button class="btn-cancel" onclick="closeModal('tarqaModal')">پاشگەزبوونەوە</button>
         </div>
-        <div class="score-box team2">
-          <span class="score-num" id="s2">0</span>
-          <span id="name2">Hama</span>
-        </div>
-      </div>
-
-      <div class="board">
-        <div class="team-col team1">
-          <div class="btn-row domino-only">
-            <button class="btn-m10" onclick="addDominoScore(1, -10)">-10</button>
-            <button class="btn-m5" onclick="addDominoScore(1, -5)">-5</button>
-            <button class="btn-p10" onclick="addDominoScore(1, 10)">+10</button>
-            <button class="btn-p5" onclick="addDominoScore(1, 5)">+5</button>
-          </div>
-
-          <div class="komkan-btns komkan-only hidden">
-            <button onclick="addKomkanScore(1, 5)">+5</button>
-            <button onclick="addKomkanScore(1, 10)">+10</button>
-            <button onclick="addKomkanScore(1, 25)">+25</button>
-            <button onclick="addKomkanScore(1, 50)">+50</button>
-            <button class="special" onclick="addKomkanScore(1, 101)">+101</button>
-            <button class="special" onclick="promptCustomScore(1)">خاڵ...</button>
-            <button class="undo" onclick="undoKomkan(1)">پاشگەزبوونەوە ↩</button>
-          </div>
-
-          <div id="grid1" class="domino-only"></div>
-          <div id="list1" class="komkan-list komkan-only hidden"></div>
-        </div>
-
-        <div class="team-col team2">
-          <div class="btn-row domino-only">
-            <button class="btn-m10" onclick="addDominoScore(2, -10)">-10</button>
-            <button class="btn-m5" onclick="addDominoScore(2, -5)">-5</button>
-            <button class="btn-p10" onclick="addDominoScore(2, 10)">+10</button>
-            <button class="btn-p5" onclick="addDominoScore(2, 5)">+5</button>
-          </div>
-
-          <div class="komkan-btns komkan-only hidden">
-            <button onclick="addKomkanScore(2, 5)">+5</button>
-            <button onclick="addKomkanScore(2, 10)">+10</button>
-            <button onclick="addKomkanScore(2, 25)">+25</button>
-            <button onclick="addKomkanScore(2, 50)">+50</button>
-            <button class="special" onclick="addKomkanScore(2, 101)">+101</button>
-            <button class="special" onclick="promptCustomScore(2)">خاڵ...</button>
-            <button class="undo" onclick="undoKomkan(2)">پاشگەزبوونەوە ↩</button>
-          </div>
-
-          <div id="grid2" class="domino-only"></div>
-          <div id="list2" class="komkan-list komkan-only hidden"></div>
-        </div>
-      </div>
-
-      <button class="btn-main" style="background:#333; margin-top:15px;" onclick="resetGame()">یارییەکی تر</button>
     </div>
-  </div>
+</div>
 
-  <script>
-    let dominoScore1 = 0, dominoScore2 = 0;
-    let komkanHistory1 = [], komkanHistory2 = [];
-    let currentMode = 'domino';
+<!-- Modal for Custom Points -->
+<div class="modal" id="customModal">
+    <div class="modal-content">
+        <h3 id="customTitle" style="text-align: center;">زیادکردنی خاڵ</h3>
+        <input type="number" id="customScoreInput" placeholder="ژمارەی خاڵ بنووسە">
+        <div class="modal-actions">
+            <button class="btn-confirm" onclick="confirmCustomScore()">تۆمارکردن</button>
+            <button class="btn-cancel" onclick="closeModal('customModal')">پاشگەزبوونەوە</button>
+        </div>
+    </div>
+</div>
 
-    function switchMode(mode) {
-      currentMode = mode;
-      document.getElementById('btn-mode-domino').classList.toggle('active', mode === 'domino');
-      document.getElementById('btn-mode-komkan').classList.toggle('active', mode === 'komkan');
+<script>
+    let scores = { 1: 0, 2: 0 };
+    let history = { 1: [], 2: [] };
+    let activeTeam = null;
 
-      const dominoEls = document.querySelectorAll('.domino-only');
-      const komkanEls = document.querySelectorAll('.komkan-only');
+    function updateUI() {
+        document.getElementById('score-1').innerText = scores[1];
+        document.getElementById('score-2').innerText = scores[2];
 
-      if (mode === 'domino') {
-        dominoEls.forEach(el => el.classList.remove('hidden'));
-        komkanEls.forEach(el => el.classList.add('hidden'));
-      } else {
-        dominoEls.forEach(el => el.classList.add('hidden'));
-        komkanEls.forEach(el => el.classList.remove('hidden'));
-      }
-
-      updateDisplays();
+        renderHistory(1);
+        renderHistory(2);
     }
 
-    function startGame() {
-      document.getElementById('name1').innerText = document.getElementById('t1-input').value || 'Pola';
-      document.getElementById('name2').innerText = document.getElementById('t2-input').value || 'Hama';
-      
-      document.getElementById('setup-screen').classList.add('hidden');
-      document.getElementById('game-screen').classList.remove('hidden');
-      updateDisplays();
-    }
-
-    /* --- Domino Functions --- */
-    function addDominoScore(team, value) {
-      if (team === 1) dominoScore1 = Math.max(0, dominoScore1 + value);
-      else dominoScore2 = Math.max(0, dominoScore2 + value);
-      updateDisplays();
-    }
-
-    /* --- Komkan Functions --- */
-    function addKomkanScore(team, val) {
-      if (team === 1) komkanHistory1.push(val);
-      else komkanHistory2.push(val);
-      updateDisplays();
-    }
-
-    function promptCustomScore(team) {
-      let val = prompt("خاڵەکە بنووسە:");
-      if (val && !isNaN(val)) {
-        addKomkanScore(team, parseInt(val));
-      }
-    }
-
-    function undoKomkan(team) {
-      if (team === 1) komkanHistory1.pop();
-      else komkanHistory2.pop();
-      updateDisplays();
-    }
-
-    /* --- Display Updates --- */
-    function updateDisplays() {
-      if (currentMode === 'domino') {
-        document.getElementById('s1').innerText = dominoScore1;
-        document.getElementById('s2').innerText = dominoScore2;
-        renderDominoGrid('grid1', dominoScore1);
-        renderDominoGrid('grid2', dominoScore2);
-      } else {
-        let sum1 = komkanHistory1.reduce((a, b) => a + b, 0);
-        let sum2 = komkanHistory2.reduce((a, b) => a + b, 0);
-        document.getElementById('s1').innerText = sum1;
-        document.getElementById('s2').innerText = sum2;
-
-        renderKomkanList('list1', komkanHistory1);
-        renderKomkanList('list2', komkanHistory2);
-      }
-    }
-
-    function renderDominoGrid(containerId, score) {
-      const container = document.getElementById(containerId);
-      container.innerHTML = '';
-      let totalBoxes = Math.max(4, Math.ceil(score / 100));
-
-      for (let b = 0; b < totalBoxes; b++) {
-        const boxDiv = document.createElement('div');
-        boxDiv.className = 'grid-box';
-        let boxScore = Math.min(100, Math.max(0, score - (b * 100)));
-
-        let topRow = ['', '', '', ''];
-        let bottomRow = ['', '', '', ''];
-
-        if (boxScore >= 20) topRow[0] = '✕';
-        else if (boxScore >= 10) topRow[0] = '/';
-
-        if (boxScore >= 25) bottomRow[0] = 'O';
-
-        if (boxScore >= 40) topRow[1] = '✕';
-        else if (boxScore >= 30) topRow[1] = '/';
-
-        if (boxScore >= 45) bottomRow[1] = 'O';
-
-        if (boxScore >= 60) topRow[2] = '✕';
-        else if (boxScore >= 50) topRow[2] = '/';
-
-        if (boxScore >= 65) bottomRow[2] = 'O';
-
-        if (boxScore >= 80) topRow[3] = '✕';
-        else if (boxScore >= 70) topRow[3] = '/';
-
-        if (boxScore >= 85) bottomRow[3] = 'O';
-
-        for (let i = 0; i < 4; i++) {
-          const cell = document.createElement('div');
-          cell.className = 'cell';
-          cell.innerText = topRow[i];
-          boxDiv.appendChild(cell);
+    function renderHistory(team) {
+        const box = document.getElementById(`history-${team}`);
+        if (history[team].length === 0) {
+            box.innerHTML = 'هیچ خاڵێک نییە';
+        } else {
+            box.innerHTML = history[team].map((val, idx) => `<div>${idx + 1}. ${val}</div>`).join('');
         }
-
-        for (let i = 0; i < 4; i++) {
-          const cell = document.createElement('div');
-          cell.className = 'cell';
-          cell.innerText = bottomRow[i];
-          boxDiv.appendChild(cell);
-        }
-
-        container.appendChild(boxDiv);
-      }
     }
 
-    function renderKomkanList(containerId, history) {
-      const container = document.getElementById(containerId);
-      container.innerHTML = '';
-      if (history.length === 0) {
-        container.innerHTML = '<div style="color:#666; font-size:13px; text-align:center; padding-top:20px;">هیچ خاڵێک نییە</div>';
-        return;
-      }
-      history.forEach((val, idx) => {
-        const item = document.createElement('div');
-        item.className = 'komkan-item';
-        item.innerHTML = `<span>دەست ${idx + 1}</span><span>+${val}</span>`;
-        container.appendChild(item);
-      });
-      container.scrollTop = container.scrollHeight;
+    function openCustomModal(team) {
+        activeTeam = team;
+        document.getElementById('customScoreInput').value = '';
+        document.getElementById('customModal').style.display = 'flex';
+    }
+
+    function confirmCustomScore() {
+        const val = parseInt(document.getElementById('customScoreInput').value);
+        if (!isNaN(val) && val > 0) {
+            scores[activeTeam] += val;
+            history[activeTeam].push(`+${val}`);
+            updateUI();
+        }
+        closeModal('customModal');
+    }
+
+    function openTarqaModal(team) {
+        activeTeam = team;
+        const teamName = team === 1 ? 'Hama' : 'Pola';
+        document.getElementById('tarqaTitle').innerText = `${teamName} تەرقەی کرد 🔲`;
+        document.getElementById('opposingScoreInput').value = '';
+        document.getElementById('tarqaModal').style.display = 'flex';
+    }
+
+    function confirmTarqa() {
+        const oppVal = parseInt(document.getElementById('opposingScoreInput').value);
+        if (!isNaN(oppVal) && oppVal >= 0) {
+            scores[activeTeam] += oppVal;
+            history[activeTeam].push(`تەرقە (+${oppVal})`);
+            updateUI();
+        }
+        closeModal('tarqaModal');
+    }
+
+    function undo(team) {
+        if (history[team].length > 0) {
+            const last = history[team].pop();
+            const match = last.match(/\d+/);
+            if (match) {
+                const points = parseInt(match[0]);
+                scores[team] -= points;
+            }
+            updateUI();
+        }
+    }
+
+    function closeModal(id) {
+        document.getElementById(id).style.display = 'none';
     }
 
     function resetGame() {
-      dominoScore1 = 0; dominoScore2 = 0;
-      komkanHistory1 = []; komkanHistory2 = [];
-      updateDisplays();
-      document.getElementById('game-screen').classList.add('hidden');
-      document.getElementById('setup-screen').classList.remove('hidden');
+        if (confirm('دڵنیایت لە دەستپێکردنەوەی یارییەکە؟')) {
+            scores = { 1: 0, 2: 0 };
+            history = { 1: [], 2: [] };
+            updateUI();
+        }
     }
-
-    /* PWA Support */
-    if ('serviceWorker' in navigator) {
-      window.addEventListener('load', () => {
-        const swCode = `
-          const CACHE_NAME = 'domino-v3';
-          self.addEventListener('install', e => e.waitUntil(caches.open(CACHE_NAME).then(c => c.addAll(['./']))));
-          self.addEventListener('fetch', e => e.respondWith(caches.match(e.request).then(r => r || fetch(e.request))));
-        `;
-        const blob = new Blob([swCode], { type: 'application/javascript' });
-        navigator.serviceWorker.register(URL.createObjectURL(blob)).catch(() => {});
-      });
-    }
-  </script>
+</script>
 </body>
 </html>
