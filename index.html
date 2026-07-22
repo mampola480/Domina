@@ -2,264 +2,563 @@
 <html lang="ckb" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mam Pola - ژمارەی دۆمینە</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Mam Pola - ژمارەی دۆمینە و کۆمکان</title>
     <style>
+        :root {
+            --bg-main: #0d1117;
+            --bg-card: #161b22;
+            --bg-inner: #21262d;
+            --accent-gold: #f59e0b;
+            --accent-gold-glow: rgba(245, 158, 11, 0.3);
+            --team-hama: #38bdf8;
+            --team-hama-bg: rgba(56, 189, 248, 0.1);
+            --team-pola: #f43f5e;
+            --team-pola-bg: rgba(244, 63, 94, 0.1);
+            --text-primary: #f0f6fc;
+            --text-secondary: #8b949e;
+            --border-color: #30363d;
+        }
+
         * {
             box-sizing: border-box;
-            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             margin: 0;
             padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+            user-select: none;
         }
 
         body {
-            background-color: #121212;
-            color: #ffffff;
+            background-color: var(--bg-main);
+            color: var(--text-primary);
             display: flex;
             justify-content: center;
-            align-items: center;
+            align-items: flex-start;
             min-height: 100vh;
-            padding: 15px;
+            padding: 12px;
         }
 
-        .container {
+        .app-wrapper {
             width: 100%;
-            max-width: 450px;
-            background-color: #1e1e1e;
-            border-radius: 16px;
-            padding: 15px;
-            box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+            max-width: 440px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 24px;
+            padding: 16px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
         }
 
-        .header {
-            background-color: #2a2a2a;
-            border-radius: 12px;
+        /* Header */
+        .header-bar {
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.15), rgba(245, 158, 11, 0.05));
+            border: 1px solid rgba(245, 158, 11, 0.3);
+            border-radius: 16px;
             padding: 12px;
             text-align: center;
-            font-weight: bold;
-            font-size: 1.1rem;
-            color: #ffcc00;
-            margin-bottom: 15px;
-            border: 1px solid #333;
+            font-weight: 700;
+            font-size: 1.05rem;
+            color: var(--accent-gold);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
         }
 
-        .mode-buttons {
+        /* Mode Selector Switcher */
+        .mode-switcher {
             display: flex;
-            gap: 10px;
-            margin-bottom: 15px;
+            background: var(--bg-inner);
+            padding: 4px;
+            border-radius: 16px;
+            border: 1px solid var(--border-color);
+            gap: 4px;
         }
 
         .mode-btn {
             flex: 1;
-            padding: 12px;
+            padding: 12px 8px;
             border: none;
-            border-radius: 10px;
-            background-color: #333;
-            color: #fff;
-            font-weight: bold;
+            border-radius: 12px;
+            background: transparent;
+            color: var(--text-secondary);
+            font-weight: 700;
             font-size: 1rem;
             cursor: pointer;
-            transition: 0.2s;
+            transition: all 0.25s ease;
         }
 
         .mode-btn.active {
-            background-color: #ffcc00;
+            background: var(--accent-gold);
             color: #000;
+            box-shadow: 0 4px 14px var(--accent-gold-glow);
         }
 
-        .teams-container {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 15px;
+        /* Mode Banner Info */
+        .mode-info-badge {
+            text-align: center;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            margin-top: -6px;
         }
 
-        .team-box {
-            flex: 1;
-            background-color: #262626;
-            border-radius: 12px;
-            padding: 10px;
+        /* Teams Grid */
+        .teams-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .team-card {
+            background: var(--bg-inner);
+            border-radius: 18px;
+            padding: 12px;
             display: flex;
             flex-direction: column;
             gap: 10px;
+            border: 2px solid transparent;
+            transition: all 0.2s;
         }
 
-        .team-box.hama { border: 2px solid #0088cc; }
-        .team-box.pola { border: 2px solid #e53935; }
+        .team-card.hama {
+            border-color: rgba(56, 189, 248, 0.4);
+            background: linear-gradient(180deg, var(--team-hama-bg), var(--bg-inner));
+        }
+
+        .team-card.pola {
+            border-color: rgba(244, 63, 94, 0.4);
+            background: linear-gradient(180deg, var(--team-pola-bg), var(--bg-inner));
+        }
 
         .team-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            font-size: 1.1rem;
-            font-weight: bold;
-            padding: 5px;
         }
 
-        .score-display {
-            font-size: 1.6rem;
+        .team-name {
+            font-size: 1.1rem;
+            font-weight: 800;
+        }
+
+        .hama .team-name { color: var(--team-hama); }
+        .pola .team-name { color: var(--team-pola); }
+
+        .score-badge {
+            font-size: 2.2rem;
+            font-weight: 900;
+            line-height: 1;
+            text-align: center;
+            padding: 8px 0;
+            color: var(--text-primary);
+        }
+
+        /* Action Buttons */
+        .btn-group {
+            display: flex;
+            flex-direction: column;
+            gap: 7px;
         }
 
         .action-btn {
             width: 100%;
-            padding: 10px;
+            padding: 11px 6px;
             border: none;
-            border-radius: 8px;
-            font-weight: bold;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 0.9rem;
             cursor: pointer;
-            font-size: 0.95rem;
-            transition: opacity 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            transition: transform 0.1s, opacity 0.2s;
         }
 
-        .action-btn:active { opacity: 0.7; }
-        .btn-custom { background-color: #333; color: #fff; }
-        .btn-tarqa { background-color: #ff9800; color: #000; }
-        .btn-undo { background-color: #455a64; color: #fff; }
+        .action-btn:active {
+            transform: scale(0.97);
+            opacity: 0.85;
+        }
 
-        .history-box {
-            height: 150px;
-            background-color: #1a1a1a;
-            border-radius: 8px;
+        .btn-quick-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 6px;
+        }
+
+        .btn-quick {
+            background: rgba(255, 255, 255, 0.07);
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
             padding: 8px;
-            overflow-y: auto;
+            border-radius: 10px;
+            font-weight: 700;
             font-size: 0.85rem;
-            color: #aaa;
+            cursor: pointer;
+        }
+
+        .btn-add-custom {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+        }
+
+        .btn-tarqa {
+            background: linear-gradient(135deg, #f97316, #ea580c);
+            color: #fff;
+            box-shadow: 0 4px 10px rgba(249, 115, 22, 0.3);
+        }
+
+        .btn-undo {
+            background: #334155;
+            color: #cbd5e1;
+            font-size: 0.8rem;
+        }
+
+        /* History Log Panel */
+        .history-box {
+            height: 120px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 12px;
+            padding: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            overflow-y: auto;
+            font-size: 0.82rem;
             display: flex;
             flex-direction: column;
             gap: 4px;
         }
 
-        .reset-btn {
-            width: 100%;
-            padding: 12px;
-            border: none;
-            border-radius: 10px;
-            background-color: #333;
-            color: #fff;
-            font-weight: bold;
-            margin-top: 15px;
-            cursor: pointer;
+        .history-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 4px 6px;
+            background: rgba(255, 255, 255, 0.04);
+            border-radius: 6px;
+            color: var(--text-secondary);
         }
 
-        /* Modal / Pop-up for Tarqa & Custom Point */
-        .modal {
+        .history-item span.val {
+            font-weight: bold;
+            color: var(--accent-gold);
+        }
+
+        /* Bottom Controls */
+        .bottom-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 4px;
+        }
+
+        .btn-reset {
+            flex: 1;
+            padding: 13px;
+            border: 1px solid var(--border-color);
+            border-radius: 14px;
+            background: var(--bg-inner);
+            color: var(--text-primary);
+            font-weight: 700;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .btn-reset:hover {
+            background: #2d333b;
+        }
+
+        /* Modals */
+        .modal-overlay {
             display: none;
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.8);
+            background: rgba(0, 0, 0, 0.82);
+            backdrop-filter: blur(6px);
             justify-content: center;
             align-items: center;
-            z-index: 100;
+            z-index: 999;
+            padding: 16px;
         }
 
-        .modal-content {
-            background: #262626;
+        .modal-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
             padding: 20px;
-            border-radius: 12px;
-            width: 90%;
-            max-width: 350px;
+            width: 100%;
+            max-width: 340px;
             display: flex;
             flex-direction: column;
-            gap: 12px;
+            gap: 14px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.8);
+            animation: modalIn 0.2s ease-out;
         }
 
-        .modal-content input {
-            padding: 10px;
-            border-radius: 6px;
-            border: 1px solid #444;
-            background: #121212;
-            color: #fff;
-            font-size: 1rem;
+        @keyframes modalIn {
+            from { opacity: 0; transform: scale(0.92); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .modal-title {
+            font-size: 1.1rem;
+            font-weight: bold;
             text-align: center;
+            color: var(--accent-gold);
         }
 
-        .modal-actions {
-            display: flex;
-            gap: 8px;
+        .modal-sub {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            text-align: center;
+            line-height: 1.4;
         }
 
-        .modal-actions button {
-            flex: 1;
-            padding: 10px;
-            border: none;
-            border-radius: 6px;
+        .num-input {
+            width: 100%;
+            padding: 12px;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            background: var(--bg-main);
+            color: #fff;
+            font-size: 1.4rem;
+            font-weight: bold;
+            text-align: center;
+            outline: none;
+        }
+
+        .num-input:focus {
+            border-color: var(--accent-gold);
+        }
+
+        .quick-num-selector {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 6px;
+        }
+
+        .quick-num-btn {
+            padding: 8px;
+            background: var(--bg-inner);
+            border: 1px solid var(--border-color);
+            color: #fff;
+            border-radius: 8px;
             font-weight: bold;
             cursor: pointer;
         }
 
-        .btn-confirm { background: #4caf50; color: #fff; }
-        .btn-cancel { background: #f44336; color: #fff; }
+        .modal-btns {
+            display: flex;
+            gap: 10px;
+            margin-top: 4px;
+        }
+
+        .modal-btns button {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 12px;
+            font-weight: bold;
+            font-size: 0.95rem;
+            cursor: pointer;
+        }
+
+        .btn-confirm-save { background: #22c55e; color: #fff; }
+        .btn-cancel-modal { background: #ef4444; color: #fff; }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <div class="header">
-        07514807205 Mam Pola ☀️
+<div class="app-wrapper">
+
+    <!-- Header -->
+    <div class="header-bar">
+        <span>☀️</span>
+        <span>Mam Pola 07514807205</span>
     </div>
 
-    <div class="mode-buttons">
-        <button class="mode-btn active" id="mode-komkan">کۆمکان</button>
-        <button class="mode-btn" id="mode-domina">دۆمینه</button>
+    <!-- Mode Switcher -->
+    <div class="mode-switcher">
+        <button class="mode-btn active" id="btn-komkan" onclick="switchMode('komkan')">کۆمکان</button>
+        <button class="mode-btn" id="btn-domina" onclick="switchMode('domina')">دۆمینه</button>
     </div>
 
-    <div class="teams-container">
-        <!-- Team 1 -->
-        <div class="team-box hama">
+    <div class="mode-info-badge" id="mode-badge">دۆخی دیاریکراو: کۆمکان</div>
+
+    <!-- Teams Grid -->
+    <div class="teams-grid">
+
+        <!-- Team 1: Hama -->
+        <div class="team-card hama">
             <div class="team-header">
-                <span>Hama</span>
-                <span class="score-display" id="score-1">0</span>
+                <span class="team-name">Hama</span>
+                <span style="font-size: 0.75rem; color: var(--text-secondary);">گروپی ١</span>
             </div>
-            <button class="action-btn btn-custom" onclick="openCustomModal(1)">+ خاڵ...</button>
-            <button class="action-btn btn-tarqa" onclick="openTarqaModal(1)">🔲 تەرقە</button>
-            <button class="action-btn btn-undo" onclick="undo(1)">↩ پاشگەزبوونەوە</button>
-            <div class="history-box" id="history-1">هیچ خاڵێک نییە</div>
+            
+            <div class="score-badge" id="score-1">0</div>
+
+            <div class="btn-group" id="controls-1">
+                <!-- Controls dynamically generated via JavaScript -->
+            </div>
+
+            <div class="history-box" id="history-1">
+                <div style="text-align: center; color: #555; padding-top: 35px;">خاڵێک نییە</div>
+            </div>
         </div>
 
-        <!-- Team 2 -->
-        <div class="team-box pola">
+        <!-- Team 2: Pola -->
+        <div class="team-card pola">
             <div class="team-header">
-                <span>Pola</span>
-                <span class="score-display" id="score-2">0</span>
+                <span class="team-name">Pola</span>
+                <span style="font-size: 0.75rem; color: var(--text-secondary);">گروپی ٢</span>
             </div>
-            <button class="action-btn btn-custom" onclick="openCustomModal(2)">+ خاڵ...</button>
-            <button class="action-btn btn-tarqa" onclick="openTarqaModal(2)">🔲 تەرقە</button>
-            <button class="action-btn btn-undo" onclick="undo(2)">↩ پاشگەزبوونەوە</button>
-            <div class="history-box" id="history-2">هیچ خاڵێک نییە</div>
+            
+            <div class="score-badge" id="score-2">0</div>
+
+            <div class="btn-group" id="controls-2">
+                <!-- Controls dynamically generated via JavaScript -->
+            </div>
+
+            <div class="history-box" id="history-2">
+                <div style="text-align: center; color: #555; padding-top: 35px;">خاڵێک نییە</div>
+            </div>
         </div>
+
     </div>
 
-    <button class="reset-btn" onclick="resetGame()">یارییەکی تر</button>
+    <!-- Bottom Actions -->
+    <div class="bottom-actions">
+        <button class="btn-reset" onclick="resetAll()">🔄 دەستپێکردنەوەی یاری</button>
+    </div>
+
 </div>
 
-<!-- Modal for Tarqa -->
-<div class="modal" id="tarqaModal">
-    <div class="modal-content">
-        <h3 id="tarqaTitle" style="text-align: center;">تەرقە</h3>
-        <p style="font-size:0.9rem; color:#ccc; text-align:center;">خاڵی دەستی گروپی بەرامبەر بنووسە:</p>
-        <input type="number" id="opposingScoreInput" placeholder="خاڵی بەرامبەر">
-        <div class="modal-actions">
-            <button class="btn-confirm" onclick="confirmTarqa()">تۆمارکردن</button>
-            <button class="btn-cancel" onclick="closeModal('tarqaModal')">پاشگەزبوونەوە</button>
+<!-- Custom Score Modal -->
+<div class="modal-overlay" id="customScoreModal">
+    <div class="modal-card">
+        <div class="modal-title" id="customModalTitle">زیادکردنی خاڵ</div>
+        <div class="modal-sub">ژمارەی ئەو خاڵانە بنووسە کە دەتەوێت زیادی بکەیت:</div>
+        
+        <input type="number" id="customScoreInput" class="num-input" placeholder="0" inputmode="numeric">
+
+        <div class="quick-num-selector">
+            <button class="quick-num-btn" onclick="addQuickNum(5)">+5</button>
+            <button class="quick-num-btn" onclick="addQuickNum(10)">+10</button>
+            <button class="quick-num-btn" onclick="addQuickNum(25)">+25</button>
+            <button class="quick-num-btn" onclick="addQuickNum(50)">+50</button>
+        </div>
+
+        <div class="modal-btns">
+            <button class="btn-confirm-save" onclick="saveCustomScore()">تۆمارکردن</button>
+            <button class="btn-cancel-modal" onclick="closeModal('customScoreModal')">داخستن</button>
         </div>
     </div>
 </div>
 
-<!-- Modal for Custom Points -->
-<div class="modal" id="customModal">
-    <div class="modal-content">
-        <h3 id="customTitle" style="text-align: center;">زیادکردنی خاڵ</h3>
-        <input type="number" id="customScoreInput" placeholder="ژمارەی خاڵ بنووسە">
-        <div class="modal-actions">
-            <button class="btn-confirm" onclick="confirmCustomScore()">تۆمارکردن</button>
-            <button class="btn-cancel" onclick="closeModal('customModal')">پاشگەزبوونەوە</button>
+<!-- Tarqa Modal -->
+<div class="modal-overlay" id="tarqaModal">
+    <div class="modal-card">
+        <div class="modal-title" id="tarqaTitle">تەرقە 🔲</div>
+        <div class="modal-sub">خاڵی دەستی گروپی بەرامبەر بژمێرە و بنووسە بۆ ئەوەی بخرێتە سەر ئەم گروپە:</div>
+        
+        <input type="number" id="tarqaInput" class="num-input" placeholder="خاڵی بەرامبەر" inputmode="numeric">
+
+        <div class="quick-num-selector">
+            <button class="quick-num-btn" onclick="setTarqaNum(10)">10</button>
+            <button class="quick-num-btn" onclick="setTarqaNum(20)">20</button>
+            <button class="quick-num-btn" onclick="setTarqaNum(30)">30</button>
+            <button class="quick-num-btn" onclick="setTarqaNum(50)">50</button>
+        </div>
+
+        <div class="modal-btns">
+            <button class="btn-confirm-save" onclick="saveTarqa()">تۆمارکردن</button>
+            <button class="btn-cancel-modal" onclick="closeModal('tarqaModal')">داخستن</button>
         </div>
     </div>
 </div>
 
 <script>
+    let currentMode = 'komkan'; // 'komkan' or 'domina'
     let scores = { 1: 0, 2: 0 };
     let history = { 1: [], 2: [] };
     let activeTeam = null;
+
+    // Load from LocalStorage if available
+    function loadSavedData() {
+        try {
+            const saved = localStorage.getItem('domino_pola_state');
+            if (saved) {
+                const parsed = JSON.parse(saved);
+                scores = parsed.scores || { 1: 0, 2: 0 };
+                history = parsed.history || { 1: [], 2: [] };
+                currentMode = parsed.mode || 'komkan';
+            }
+        } catch (e) {
+            console.error(e);
+        }
+    }
+
+    function saveData() {
+        try {
+            localStorage.setItem('domino_pola_state', JSON.stringify({
+                scores,
+                history,
+                mode: currentMode
+            }));
+        } catch (e) {
+            console.error(e);
+        }
+    }
+
+    function switchMode(mode) {
+        currentMode = mode;
+        
+        document.getElementById('btn-komkan').classList.toggle('active', mode === 'komkan');
+        document.getElementById('btn-domina').classList.toggle('active', mode === 'domina');
+        
+        document.getElementById('mode-badge').innerText = mode === 'komkan' 
+            ? 'دۆخی دیاریکراو: کۆمکان' 
+            : 'دۆخی دیاریکراو: دۆمینە (١٠١)';
+
+        renderControls();
+        saveData();
+    }
+
+    function renderControls() {
+        [1, 2].forEach(team => {
+            const container = document.getElementById(`controls-${team}`);
+            if (currentMode === 'komkan') {
+                container.innerHTML = `
+                    <button class="action-btn btn-add-custom" onclick="openCustomModal(${team})">➕ خاڵی دیاریکراو...</button>
+                    <button class="action-btn btn-tarqa" onclick="openTarqaModal(${team})">🔲 تەرقە</button>
+                    <button class="action-btn btn-undo" onclick="undoScore(${team})">↩ پاشگەزبوونەوە</button>
+                `;
+            } else {
+                // Domina Mode with quick addition buttons (+5, +10, +25, +50, +101)
+                container.innerHTML = `
+                    <div class="btn-quick-grid">
+                        <button class="btn-quick" onclick="addPoints(${team}, 5, '+5')">+5</button>
+                        <button class="btn-quick" onclick="addPoints(${team}, 10, '+10')">+10</button>
+                        <button class="btn-quick" onclick="addPoints(${team}, 25, '+25')">+25</button>
+                        <button class="btn-quick" onclick="addPoints(${team}, 50, '+50')">+50</button>
+                    </div>
+                    <button class="action-btn btn-add-custom" onclick="openCustomModal(${team})">➕ خاڵی بەدەستچوو...</button>
+                    <button class="action-btn btn-undo" onclick="undoScore(${team})">↩ پاشگەزبوونەوە</button>
+                `;
+            }
+        });
+        updateUI();
+    }
+
+    function addPoints(team, pts, label) {
+        scores[team] += pts;
+        history[team].push({ val: pts, text: label || `+${pts}` });
+        updateUI();
+        saveData();
+    }
 
     function updateUI() {
         document.getElementById('score-1').innerText = scores[1];
@@ -271,56 +570,73 @@
 
     function renderHistory(team) {
         const box = document.getElementById(`history-${team}`);
-        if (history[team].length === 0) {
-            box.innerHTML = 'هیچ خاڵێک نییە';
-        } else {
-            box.innerHTML = history[team].map((val, idx) => `<div>${idx + 1}. ${val}</div>`).join('');
+        if (!history[team] || history[team].length === 0) {
+            box.innerHTML = '<div style="text-align: center; color: #555; padding-top: 35px;">خاڵێک نییە</div>';
+            return;
         }
+
+        box.innerHTML = history[team].map((item, index) => `
+            <div class="history-item">
+                <span>جەولەی ${index + 1}</span>
+                <span class="val">${item.text}</span>
+            </div>
+        `).reverse().join('');
     }
 
+    /* Modal Handlers */
     function openCustomModal(team) {
         activeTeam = team;
+        const teamName = team === 1 ? 'Hama' : 'Pola';
+        document.getElementById('customModalTitle').innerText = `زیادکردنی خاڵ بۆ (${teamName})`;
         document.getElementById('customScoreInput').value = '';
-        document.getElementById('customModal').style.display = 'flex';
+        document.getElementById('customScoreModal').style.display = 'flex';
+        document.getElementById('customScoreInput').focus();
     }
 
-    function confirmCustomScore() {
+    function addQuickNum(num) {
+        const input = document.getElementById('customScoreInput');
+        const curr = parseInt(input.value) || 0;
+        input.value = curr + num;
+    }
+
+    function saveCustomScore() {
         const val = parseInt(document.getElementById('customScoreInput').value);
-        if (!isNaN(val) && val > 0) {
-            scores[activeTeam] += val;
-            history[activeTeam].push(`+${val}`);
-            updateUI();
+        if (!isNaN(val) && val > 0 && activeTeam) {
+            addPoints(activeTeam, val, `+${val}`);
         }
-        closeModal('customModal');
+        closeModal('customScoreModal');
     }
 
     function openTarqaModal(team) {
         activeTeam = team;
         const teamName = team === 1 ? 'Hama' : 'Pola';
         document.getElementById('tarqaTitle').innerText = `${teamName} تەرقەی کرد 🔲`;
-        document.getElementById('opposingScoreInput').value = '';
+        document.getElementById('tarqaInput').value = '';
         document.getElementById('tarqaModal').style.display = 'flex';
+        document.getElementById('tarqaInput').focus();
     }
 
-    function confirmTarqa() {
-        const oppVal = parseInt(document.getElementById('opposingScoreInput').value);
-        if (!isNaN(oppVal) && oppVal >= 0) {
+    function setTarqaNum(num) {
+        document.getElementById('tarqaInput').value = num;
+    }
+
+    function saveTarqa() {
+        const oppVal = parseInt(document.getElementById('tarqaInput').value);
+        if (!isNaN(oppVal) && oppVal >= 0 && activeTeam) {
             scores[activeTeam] += oppVal;
-            history[activeTeam].push(`تەرقە (+${oppVal})`);
+            history[activeTeam].push({ val: oppVal, text: `تەرقە (+${oppVal})` });
             updateUI();
+            saveData();
         }
         closeModal('tarqaModal');
     }
 
-    function undo(team) {
-        if (history[team].length > 0) {
+    function undoScore(team) {
+        if (history[team] && history[team].length > 0) {
             const last = history[team].pop();
-            const match = last.match(/\d+/);
-            if (match) {
-                const points = parseInt(match[0]);
-                scores[team] -= points;
-            }
+            scores[team] = Math.max(0, scores[team] - last.val);
             updateUI();
+            saveData();
         }
     }
 
@@ -328,13 +644,18 @@
         document.getElementById(id).style.display = 'none';
     }
 
-    function resetGame() {
-        if (confirm('دڵنیایت لە دەستپێکردنەوەی یارییەکە؟')) {
+    function resetAll() {
+        if (confirm('دڵنیایت لە سڕینەوەی سەرجەم خاڵەکان؟')) {
             scores = { 1: 0, 2: 0 };
             history = { 1: [], 2: [] };
             updateUI();
+            saveData();
         }
     }
+
+    // Init App
+    loadSavedData();
+    switchMode(currentMode);
 </script>
 </body>
 </html>
