@@ -3,7 +3,17 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Mam Pola | Domino Score</title>
+  <title>Mam Pola | Domino & Komkan</title>
+  
+  <link rel="manifest" href="data:application/manifest+json;utf8,{
+    %22name%22:%22Domino%20Mam%20Pola%22,
+    %22short_name%22:%22Domino%22,
+    %22start_url%22:%22.%22,
+    %22display%22:%22standalone%22,
+    %22background_color%22:%22%23121212%22,
+    %22theme_color%22:%22%23121212%22
+  }">
+
   <style>
     * {
       box-sizing: border-box;
@@ -31,28 +41,42 @@
       text-align: center;
     }
 
-    /* Header with Phone Number Fixed Inline */
+    /* Header */
     .header {
       background: #1e1e1e;
       padding: 10px 14px;
       border-radius: 14px;
-      margin-bottom: 12px;
+      margin-bottom: 10px;
       border: 1px solid #333;
       display: flex;
       align-items: center;
       justify-content: center;
       gap: 8px;
     }
-    .developer-name { 
-      font-size: 18px; 
-      font-weight: bold; 
-      color: #f1c40f; 
+    .developer-name { font-size: 18px; font-weight: bold; color: #f1c40f; }
+    .phone-number { font-size: 13px; color: #3498db; direction: ltr; font-weight: bold; }
+
+    /* Mode Switcher */
+    .mode-switch {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 12px;
     }
-    .phone-number { 
-      font-size: 13px; 
-      color: #3498db; 
-      direction: ltr; 
-      font-weight: bold; 
+    .mode-btn {
+      flex: 1;
+      padding: 10px;
+      border-radius: 10px;
+      border: 1px solid #444;
+      background: #222;
+      color: #aaa;
+      font-weight: bold;
+      font-size: 15px;
+      cursor: pointer;
+    }
+    .mode-btn.active {
+      background: #f1c40f;
+      color: #121212;
+      border-color: #f1c40f;
     }
 
     /* Setup Screen */
@@ -108,11 +132,22 @@
     .score-box.team1 { border-color: #e74c3c; color: #fff; }
     .score-box.team2 { border-color: #3498db; color: #fff; }
 
-    /* Controls */
+    /* Board */
+    .board {
+      display: flex;
+      gap: 10px;
+    }
+    .team-col {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    /* Domino Buttons */
     .btn-row {
       display: flex;
       gap: 4px;
-      margin-bottom: 8px;
     }
     .btn-row button {
       flex: 1;
@@ -129,19 +164,7 @@
     .btn-m5 { background: #e74c3c; }
     .btn-m10 { background: #c0392b; }
 
-    /* Board */
-    .board {
-      display: flex;
-      gap: 10px;
-    }
-    .team-col {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
-
-    /* Grid Box (2 rows x 4 cols) */
+    /* Domino Grid Box */
     .grid-box {
       background: #1e1e1e;
       border-radius: 12px;
@@ -165,10 +188,49 @@
       font-weight: bold;
       color: #fff;
     }
-
     .team1 .cell { background: #e74c3c; }
     .team2 .cell { background: #3498db; }
 
+    /* Komkan Layout */
+    .komkan-btns {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 5px;
+    }
+    .komkan-btns button {
+      padding: 8px 0;
+      border: none;
+      border-radius: 6px;
+      font-weight: bold;
+      font-size: 13px;
+      color: #fff;
+      background: #333;
+      cursor: pointer;
+    }
+    .komkan-btns button.special { background: #d35400; }
+    .komkan-btns button.undo { background: #7f8c8d; grid-column: span 2; }
+
+    .komkan-list {
+      background: #1e1e1e;
+      border-radius: 12px;
+      padding: 10px;
+      border: 1px solid #333;
+      min-height: 200px;
+      max-height: 320px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .komkan-item {
+      background: #2a2a2a;
+      padding: 8px;
+      border-radius: 8px;
+      font-size: 15px;
+      font-weight: bold;
+      display: flex;
+      justify-content: space-between;
+    }
   </style>
 </head>
 <body>
@@ -178,6 +240,11 @@
       <span style="font-size:18px;">☀️</span>
       <span class="developer-name">Mam Pola</span>
       <span class="phone-number">07514807205</span>
+    </div>
+
+    <div class="mode-switch">
+      <button class="mode-btn active" id="btn-mode-domino" onclick="switchMode('domino')">دۆمینە</button>
+      <button class="mode-btn" id="btn-mode-komkan" onclick="switchMode('komkan')">کۆمکان</button>
     </div>
 
     <div id="setup-screen" class="setup-card">
@@ -201,23 +268,47 @@
 
       <div class="board">
         <div class="team-col team1">
-          <div class="btn-row">
-            <button class="btn-m10" onclick="updateScore(1, -10)">-10</button>
-            <button class="btn-m5" onclick="updateScore(1, -5)">-5</button>
-            <button class="btn-p10" onclick="updateScore(1, 10)">+10</button>
-            <button class="btn-p5" onclick="updateScore(1, 5)">+5</button>
+          <div class="btn-row domino-only">
+            <button class="btn-m10" onclick="addDominoScore(1, -10)">-10</button>
+            <button class="btn-m5" onclick="addDominoScore(1, -5)">-5</button>
+            <button class="btn-p10" onclick="addDominoScore(1, 10)">+10</button>
+            <button class="btn-p5" onclick="addDominoScore(1, 5)">+5</button>
           </div>
-          <div id="grid1"></div>
+
+          <div class="komkan-btns komkan-only hidden">
+            <button onclick="addKomkanScore(1, 5)">+5</button>
+            <button onclick="addKomkanScore(1, 10)">+10</button>
+            <button onclick="addKomkanScore(1, 25)">+25</button>
+            <button onclick="addKomkanScore(1, 50)">+50</button>
+            <button class="special" onclick="addKomkanScore(1, 101)">+101</button>
+            <button class="special" onclick="promptCustomScore(1)">خاڵ...</button>
+            <button class="undo" onclick="undoKomkan(1)">پاشگەزبوونەوە ↩</button>
+          </div>
+
+          <div id="grid1" class="domino-only"></div>
+          <div id="list1" class="komkan-list komkan-only hidden"></div>
         </div>
 
         <div class="team-col team2">
-          <div class="btn-row">
-            <button class="btn-m10" onclick="updateScore(2, -10)">-10</button>
-            <button class="btn-m5" onclick="updateScore(2, -5)">-5</button>
-            <button class="btn-p10" onclick="updateScore(2, 10)">+10</button>
-            <button class="btn-p5" onclick="updateScore(2, 5)">+5</button>
+          <div class="btn-row domino-only">
+            <button class="btn-m10" onclick="addDominoScore(2, -10)">-10</button>
+            <button class="btn-m5" onclick="addDominoScore(2, -5)">-5</button>
+            <button class="btn-p10" onclick="addDominoScore(2, 10)">+10</button>
+            <button class="btn-p5" onclick="addDominoScore(2, 5)">+5</button>
           </div>
-          <div id="grid2"></div>
+
+          <div class="komkan-btns komkan-only hidden">
+            <button onclick="addKomkanScore(2, 5)">+5</button>
+            <button onclick="addKomkanScore(2, 10)">+10</button>
+            <button onclick="addKomkanScore(2, 25)">+25</button>
+            <button onclick="addKomkanScore(2, 50)">+50</button>
+            <button class="special" onclick="addKomkanScore(2, 101)">+101</button>
+            <button class="special" onclick="promptCustomScore(2)">خاڵ...</button>
+            <button class="undo" onclick="undoKomkan(2)">پاشگەزبوونەوە ↩</button>
+          </div>
+
+          <div id="grid2" class="domino-only"></div>
+          <div id="list2" class="komkan-list komkan-only hidden"></div>
         </div>
       </div>
 
@@ -226,7 +317,28 @@
   </div>
 
   <script>
-    let score1 = 0, score2 = 0;
+    let dominoScore1 = 0, dominoScore2 = 0;
+    let komkanHistory1 = [], komkanHistory2 = [];
+    let currentMode = 'domino';
+
+    function switchMode(mode) {
+      currentMode = mode;
+      document.getElementById('btn-mode-domino').classList.toggle('active', mode === 'domino');
+      document.getElementById('btn-mode-komkan').classList.toggle('active', mode === 'komkan');
+
+      const dominoEls = document.querySelectorAll('.domino-only');
+      const komkanEls = document.querySelectorAll('.komkan-only');
+
+      if (mode === 'domino') {
+        dominoEls.forEach(el => el.classList.remove('hidden'));
+        komkanEls.forEach(el => el.classList.add('hidden'));
+      } else {
+        dominoEls.forEach(el => el.classList.add('hidden'));
+        komkanEls.forEach(el => el.classList.remove('hidden'));
+      }
+
+      updateDisplays();
+    }
 
     function startGame() {
       document.getElementById('name1').innerText = document.getElementById('t1-input').value || 'Pola';
@@ -234,70 +346,87 @@
       
       document.getElementById('setup-screen').classList.add('hidden');
       document.getElementById('game-screen').classList.remove('hidden');
-      renderGrids();
+      updateDisplays();
     }
 
-    function updateScore(team, value) {
-      if (team === 1) {
-        score1 = Math.max(0, score1 + value);
-        document.getElementById('s1').innerText = score1;
-      } else {
-        score2 = Math.max(0, score2 + value);
-        document.getElementById('s2').innerText = score2;
+    /* --- Domino Functions --- */
+    function addDominoScore(team, value) {
+      if (team === 1) dominoScore1 = Math.max(0, dominoScore1 + value);
+      else dominoScore2 = Math.max(0, dominoScore2 + value);
+      updateDisplays();
+    }
+
+    /* --- Komkan Functions --- */
+    function addKomkanScore(team, val) {
+      if (team === 1) komkanHistory1.push(val);
+      else komkanHistory2.push(val);
+      updateDisplays();
+    }
+
+    function promptCustomScore(team) {
+      let val = prompt("خاڵەکە بنووسە:");
+      if (val && !isNaN(val)) {
+        addKomkanScore(team, parseInt(val));
       }
-      renderGrids();
     }
 
-    function renderGrids() {
-      renderTeamGrid('grid1', score1);
-      renderTeamGrid('grid2', score2);
+    function undoKomkan(team) {
+      if (team === 1) komkanHistory1.pop();
+      else komkanHistory2.pop();
+      updateDisplays();
     }
 
-    function renderTeamGrid(containerId, score) {
+    /* --- Display Updates --- */
+    function updateDisplays() {
+      if (currentMode === 'domino') {
+        document.getElementById('s1').innerText = dominoScore1;
+        document.getElementById('s2').innerText = dominoScore2;
+        renderDominoGrid('grid1', dominoScore1);
+        renderDominoGrid('grid2', dominoScore2);
+      } else {
+        let sum1 = komkanHistory1.reduce((a, b) => a + b, 0);
+        let sum2 = komkanHistory2.reduce((a, b) => a + b, 0);
+        document.getElementById('s1').innerText = sum1;
+        document.getElementById('s2').innerText = sum2;
+
+        renderKomkanList('list1', komkanHistory1);
+        renderKomkanList('list2', komkanHistory2);
+      }
+    }
+
+    function renderDominoGrid(containerId, score) {
       const container = document.getElementById(containerId);
       container.innerHTML = '';
-
       let totalBoxes = Math.max(4, Math.ceil(score / 100));
 
       for (let b = 0; b < totalBoxes; b++) {
         const boxDiv = document.createElement('div');
         boxDiv.className = 'grid-box';
-
         let boxScore = Math.min(100, Math.max(0, score - (b * 100)));
 
         let topRow = ['', '', '', ''];
         let bottomRow = ['', '', '', ''];
 
-        // Exact Sequential Domino Tallying Logic:
-        // Top Slot 1: 10 = /, 20 = ✕
         if (boxScore >= 20) topRow[0] = '✕';
         else if (boxScore >= 10) topRow[0] = '/';
 
-        // Bottom Slot 1: 25 = O
         if (boxScore >= 25) bottomRow[0] = 'O';
 
-        // Top Slot 2: 30 = /, 40 = ✕
         if (boxScore >= 40) topRow[1] = '✕';
         else if (boxScore >= 30) topRow[1] = '/';
 
-        // Bottom Slot 2: 45 = O
         if (boxScore >= 45) bottomRow[1] = 'O';
 
-        // Top Slot 3: 50 = /, 60 = ✕
         if (boxScore >= 60) topRow[2] = '✕';
         else if (boxScore >= 50) topRow[2] = '/';
 
-        // Bottom Slot 3: 65 = O
         if (boxScore >= 65) bottomRow[2] = 'O';
 
-        // Top Slot 4: 70 = /, 80 = ✕
         if (boxScore >= 80) topRow[3] = '✕';
         else if (boxScore >= 70) topRow[3] = '/';
 
-        // Bottom Slot 4: 85 = O
         if (boxScore >= 85) bottomRow[3] = 'O';
 
-        // Render Top Row Cells (1 to 4)
         for (let i = 0; i < 4; i++) {
           const cell = document.createElement('div');
           cell.className = 'cell';
@@ -305,7 +434,6 @@
           boxDiv.appendChild(cell);
         }
 
-        // Render Bottom Row Cells (1 to 4)
         for (let i = 0; i < 4; i++) {
           const cell = document.createElement('div');
           cell.className = 'cell';
@@ -317,12 +445,41 @@
       }
     }
 
+    function renderKomkanList(containerId, history) {
+      const container = document.getElementById(containerId);
+      container.innerHTML = '';
+      if (history.length === 0) {
+        container.innerHTML = '<div style="color:#666; font-size:13px; text-align:center; padding-top:20px;">هیچ خاڵێک نییە</div>';
+        return;
+      }
+      history.forEach((val, idx) => {
+        const item = document.createElement('div');
+        item.className = 'komkan-item';
+        item.innerHTML = `<span>دەست ${idx + 1}</span><span>+${val}</span>`;
+        container.appendChild(item);
+      });
+      container.scrollTop = container.scrollHeight;
+    }
+
     function resetGame() {
-      score1 = 0; score2 = 0;
-      document.getElementById('s1').innerText = 0;
-      document.getElementById('s2').innerText = 0;
+      dominoScore1 = 0; dominoScore2 = 0;
+      komkanHistory1 = []; komkanHistory2 = [];
+      updateDisplays();
       document.getElementById('game-screen').classList.add('hidden');
       document.getElementById('setup-screen').classList.remove('hidden');
+    }
+
+    /* PWA Support */
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        const swCode = `
+          const CACHE_NAME = 'domino-v3';
+          self.addEventListener('install', e => e.waitUntil(caches.open(CACHE_NAME).then(c => c.addAll(['./']))));
+          self.addEventListener('fetch', e => e.respondWith(caches.match(e.request).then(r => r || fetch(e.request))));
+        `;
+        const blob = new Blob([swCode], { type: 'application/javascript' });
+        navigator.serviceWorker.register(URL.createObjectURL(blob)).catch(() => {});
+      });
     }
   </script>
 </body>
