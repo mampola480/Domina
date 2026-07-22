@@ -5,24 +5,23 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>خاڵەکانم - دۆمینە | Mam Pola</title>
   <style>
-    /* ڕێگریکردن لە شێواندنی شاشە کاتێک دووجار دەست لە شاشە دەدرێت */
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
       font-family: system-ui, -apple-system, sans-serif;
-      touch-action: manipulation; /* ڕێگری لە Double-tap Zoom */
-      user-select: none; /* ڕێگری لە دیاری بڕگە و سێرچکردن */
+      touch-action: manipulation;
+      user-select: none;
       -webkit-user-select: none;
       -webkit-touch-callout: none;
     }
 
     body {
-      background-color: #0d0d0d;
+      background-color: #121212;
       color: #fff;
       display: flex;
       justify-content: center;
-      padding: 15px;
+      padding: 12px;
       overflow-x: hidden;
     }
 
@@ -34,24 +33,22 @@
 
     /* Header */
     .header {
-      background: #1a1a1a;
-      padding: 12px;
-      border-radius: 16px;
-      margin-bottom: 15px;
+      background: #1e1e1e;
+      padding: 10px;
+      border-radius: 14px;
+      margin-bottom: 12px;
       border: 1px solid #333;
       display: flex;
       align-items: center;
       justify-content: center;
       gap: 10px;
     }
-    .flag { font-size: 24px; }
-    .dev-info { text-align: right; }
     .developer-name { font-size: 18px; font-weight: bold; color: #f1c40f; }
-    .phone-number { font-size: 13px; color: #aaa; direction: ltr; }
+    .phone-number { font-size: 13px; color: #3498db; direction: ltr; font-weight: bold; }
 
     /* Setup Screen */
     .setup-card {
-      background: #1a1a1a;
+      background: #1e1e1e;
       padding: 20px;
       border-radius: 16px;
       border: 1px solid #333;
@@ -62,7 +59,7 @@
       margin: 10px 0;
       border-radius: 12px;
       border: 1px solid #333;
-      background: #262626;
+      background: #2a2a2a;
       color: #fff;
       font-size: 16px;
       text-align: center;
@@ -72,7 +69,7 @@
       padding: 14px;
       border: none;
       border-radius: 12px;
-      background: #c0392b;
+      background: #27ae60;
       color: #fff;
       font-weight: bold;
       font-size: 16px;
@@ -80,34 +77,33 @@
       margin-top: 10px;
     }
 
-    /* Game Screen */
     .hidden { display: none !important; }
 
-    /* Top Scores Header */
+    /* Score Header */
     .scores-header {
       display: flex;
       gap: 10px;
-      margin-bottom: 15px;
+      margin-bottom: 12px;
     }
     .score-box {
       flex: 1;
-      background: #1a1a1a;
+      background: #1e1e1e;
       border-radius: 12px;
-      padding: 10px;
-      border: 1px solid #333;
+      padding: 8px 12px;
+      border: 2px solid #333;
       display: flex;
       align-items: center;
       justify-content: space-between;
     }
-    .score-num { font-size: 24px; font-weight: bold; }
-    .score-box.red { border-color: #e74c3c; }
-    .score-box.blue { border-color: #3498db; }
+    .score-num { font-size: 26px; font-weight: bold; }
+    .score-box.team1 { border-color: #e74c3c; }
+    .score-box.team2 { border-color: #3498db; }
 
-    /* Action Buttons (+5, +10, -5, -10) */
+    /* Controls */
     .btn-row {
       display: flex;
-      gap: 5px;
-      margin-top: 8px;
+      gap: 4px;
+      margin-bottom: 8px;
     }
     .btn-row button {
       flex: 1;
@@ -115,14 +111,16 @@
       border: none;
       border-radius: 6px;
       font-weight: bold;
-      font-size: 13px;
+      font-size: 14px;
       color: white;
       cursor: pointer;
     }
-    .btn-p5, .btn-p10 { background: #27ae60; }
-    .btn-m5, .btn-m10 { background: #c0392b; }
+    .btn-p5 { background: #27ae60; }
+    .btn-p10 { background: #2ecc71; }
+    .btn-m5 { background: #e74c3c; }
+    .btn-m10 { background: #c0392b; }
 
-    /* Grid Boxes (وەکو ئەپی ناو ڤیدیۆکە) */
+    /* Main Board */
     .board {
       display: flex;
       gap: 10px;
@@ -131,35 +129,34 @@
       flex: 1;
       display: flex;
       flex-direction: column;
-      gap: 10px;
+      gap: 8px;
     }
 
+    /* Grid Box (8 cells each = 20 pts) */
     .grid-box {
       background: #1a1a1a;
-      border-radius: 12px;
-      padding: 8px;
+      border-radius: 10px;
+      padding: 6px;
       display: grid;
       grid-template-columns: repeat(4, 1fr);
       gap: 6px;
       border: 1px solid #333;
     }
-    .team-col.red .grid-box { border-color: #e74c3c; }
-    .team-col.blue .grid-box { border-color: #3498db; }
+    .team-col.team1 .grid-box { border-color: #552222; }
+    .team-col.team2 .grid-box { border-color: #223355; }
 
     .cell {
       aspect-ratio: 1;
-      background: #2a2a2a;
-      border-radius: 8px;
+      background: #252525;
+      border-radius: 6px;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 16px;
+      font-size: 15px;
       font-weight: bold;
-      color: #fff;
     }
-    .cell.slash { color: #f1c40f; }
-    .cell.cross { color: #e74c3c; }
-    .cell.circle { color: #3498db; }
+    .team1 .cell { color: #e74c3c; }
+    .team2 .cell { color: #3498db; }
 
   </style>
 </head>
@@ -167,8 +164,8 @@
 
   <div class="app">
     <div class="header">
-      <div class="flag">☀️</div>
-      <div class="dev-info">
+      <span style="font-size:20px;">☀️</span>
+      <div>
         <div class="developer-name">Mam Pola</div>
         <div class="phone-number">07514807205</div>
       </div>
@@ -183,35 +180,35 @@
     <div id="game-screen" class="hidden">
       
       <div class="scores-header">
-        <div class="score-box red">
+        <div class="score-box team1">
           <span class="score-num" id="s1">0</span>
           <span id="name1">Pola</span>
         </div>
-        <div class="score-box blue">
+        <div class="score-box team2">
           <span class="score-num" id="s2">0</span>
           <span id="name2">Hama</span>
         </div>
       </div>
 
       <div class="board">
-        <div class="team-col red">
+        <div class="team-col team1">
           <div class="btn-row">
-            <button class="btn-p5" onclick="updateScore(1, 5)">+5</button>
-            <button class="btn-p10" onclick="updateScore(1, 10)">+10</button>
-            <button class="btn-m5" onclick="updateScore(1, -5)">-5</button>
             <button class="btn-m10" onclick="updateScore(1, -10)">-10</button>
+            <button class="btn-m5" onclick="updateScore(1, -5)">-5</button>
+            <button class="btn-p10" onclick="updateScore(1, 10)">+10</button>
+            <button class="btn-p5" onclick="updateScore(1, 5)">+5</button>
           </div>
-          <div id="grid1" class="grid-container"></div>
+          <div id="grid1"></div>
         </div>
 
-        <div class="team-col blue">
+        <div class="team-col team2">
           <div class="btn-row">
-            <button class="btn-p5" onclick="updateScore(2, 5)">+5</button>
-            <button class="btn-p10" onclick="updateScore(2, 10)">+10</button>
-            <button class="btn-m5" onclick="updateScore(2, -5)">-5</button>
             <button class="btn-m10" onclick="updateScore(2, -10)">-10</button>
+            <button class="btn-m5" onclick="updateScore(2, -5)">-5</button>
+            <button class="btn-p10" onclick="updateScore(2, 10)">+10</button>
+            <button class="btn-p5" onclick="updateScore(2, 5)">+5</button>
           </div>
-          <div id="grid2" class="grid-container"></div>
+          <div id="grid2"></div>
         </div>
       </div>
 
@@ -223,11 +220,8 @@
     let score1 = 0, score2 = 0;
 
     function startGame() {
-      const name1 = document.getElementById('t1-input').value || 'گرووپی ۱';
-      const name2 = document.getElementById('t2-input').value || 'گرووپی ۲';
-      
-      document.getElementById('name1').innerText = name1;
-      document.getElementById('name2').innerText = name2;
+      document.getElementById('name1').innerText = document.getElementById('t1-input').value || 'گرووپی ۱';
+      document.getElementById('name2').innerText = document.getElementById('t2-input').value || 'گرووپی ۲';
       
       document.getElementById('setup-screen').classList.add('hidden');
       document.getElementById('game-screen').classList.remove('hidden');
@@ -254,26 +248,27 @@
       const container = document.getElementById(containerId);
       container.innerHTML = '';
 
+      // Display minimum 4 boxes or more as score increases
       let totalBoxes = Math.max(4, Math.ceil(score / 20));
 
       for (let b = 0; b < totalBoxes; b++) {
         const boxDiv = document.createElement('div');
         boxDiv.className = 'grid-box';
 
-        let boxScore = Math.min(20, Math.max(0, score - (b * 20)));
+        let remainingBoxScore = Math.min(20, Math.max(0, score - (b * 20)));
 
         for (let c = 0; c < 8; c++) {
           const cellDiv = document.createElement('div');
           cellDiv.className = 'cell';
 
-          let cellScore = Math.min(2.5, Math.max(0, boxScore - (c * 2.5)));
+          let cellScore = Math.min(2.5, Math.max(0, remainingBoxScore - (c * 2.5)));
 
           if (cellScore >= 2.5) {
             cellDiv.innerText = '✕';
-            cellDiv.classList.add('cross');
           } else if (cellScore > 0) {
             cellDiv.innerText = '/';
-            cellDiv.classList.add('slash');
+          } else {
+            cellDiv.innerText = '';
           }
 
           boxDiv.appendChild(cellDiv);
