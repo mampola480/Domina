@@ -21,7 +21,7 @@
       color: #fff;
       display: flex;
       justify-content: center;
-      padding: 12px;
+      padding: 10px;
       overflow-x: hidden;
     }
 
@@ -46,7 +46,7 @@
     .developer-name { font-size: 18px; font-weight: bold; color: #f1c40f; }
     .phone-number { font-size: 13px; color: #3498db; direction: ltr; font-weight: bold; }
 
-    /* Setup Screen */
+    /* Setup Card */
     .setup-card {
       background: #1e1e1e;
       padding: 20px;
@@ -95,7 +95,7 @@
       align-items: center;
       justify-content: space-between;
     }
-    .score-num { font-size: 26px; font-weight: bold; }
+    .score-num { font-size: 24px; font-weight: bold; }
     .score-box.team1 { border-color: #e74c3c; }
     .score-box.team2 { border-color: #3498db; }
 
@@ -111,7 +111,7 @@
       border: none;
       border-radius: 6px;
       font-weight: bold;
-      font-size: 14px;
+      font-size: 13px;
       color: white;
       cursor: pointer;
     }
@@ -120,7 +120,7 @@
     .btn-m5 { background: #e74c3c; }
     .btn-m10 { background: #c0392b; }
 
-    /* Main Board */
+    /* Main Board Layout */
     .board {
       display: flex;
       gap: 10px;
@@ -132,31 +132,33 @@
       gap: 8px;
     }
 
-    /* Grid Box (8 cells each = 20 pts) */
+    /* Grid Box (4 big slots for Domino tallying) */
     .grid-box {
-      background: #1a1a1a;
-      border-radius: 10px;
-      padding: 6px;
+      background: #232323;
+      border-radius: 12px;
+      padding: 8px;
       display: grid;
-      grid-template-columns: repeat(4, 1fr);
+      grid-template-columns: 1fr 1fr;
+      grid-template-rows: 1fr 1fr;
       gap: 6px;
-      border: 1px solid #333;
+      border: 2px solid #333;
     }
-    .team-col.team1 .grid-box { border-color: #552222; }
-    .team-col.team2 .grid-box { border-color: #223355; }
+    .team1 .grid-box { border-color: #c0392b; background: #2c1919; }
+    .team2 .grid-box { border-color: #2980b9; background: #19232c; }
 
     .cell {
       aspect-ratio: 1;
-      background: #252525;
-      border-radius: 6px;
+      background: #3b3b3b;
+      border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 15px;
+      font-size: 16px;
       font-weight: bold;
+      color: #fff;
     }
-    .team1 .cell { color: #e74c3c; }
-    .team2 .cell { color: #3498db; }
+    .team1 .cell { background: #e74c3c; color: #fff; }
+    .team2 .cell { background: #3498db; color: #fff; }
 
   </style>
 </head>
@@ -248,31 +250,49 @@
       const container = document.getElementById(containerId);
       container.innerHTML = '';
 
-      // Display minimum 4 boxes or more as score increases
-      let totalBoxes = Math.max(4, Math.ceil(score / 20));
+      let totalBoxes = Math.max(4, Math.ceil(score / 100));
 
       for (let b = 0; b < totalBoxes; b++) {
         const boxDiv = document.createElement('div');
         boxDiv.className = 'grid-box';
 
-        let remainingBoxScore = Math.min(20, Math.max(0, score - (b * 20)));
+        let boxScore = Math.min(100, Math.max(0, score - (b * 100)));
 
-        for (let c = 0; c < 8; c++) {
+        // 4 slots: Slot0 (Top-Left), Slot1 (Top-Right), Slot2 (Bottom-Left), Slot3 (Bottom-Right)
+        let slotSymbols = ['', '', '', ''];
+
+        // Slot 0 (Top-Left: 0 - 20 pts)
+        if (boxScore >= 20) slotSymbols[0] = '✕';
+        else if (boxScore >= 10) slotSymbols[0] = '/';
+
+        // Slot 2 (Bottom-Left: 25 pts)
+        if (boxScore >= 25) slotSymbols[2] = 'O';
+
+        // Slot 1 (Top-Right: 30 - 40 pts)
+        if (boxScore >= 40) slotSymbols[1] = '✕';
+        else if (boxScore >= 30) slotSymbols[1] = '/';
+
+        // Slot 3 (Bottom-Right: 45 pts)
+        if (boxScore >= 45) slotSymbols[3] = 'O';
+
+        // Slot 0 second round (50 - 70 pts)
+        if (boxScore >= 70) slotSymbols[0] = '✕ O';
+        else if (boxScore >= 50) slotSymbols[0] = '✕ /';
+
+        // Slot 1 second round (80 - 100 pts)
+        if (boxScore >= 100) slotSymbols[1] = '✕ O';
+        else if (boxScore >= 80) slotSymbols[1] = '✕ /';
+
+        // Order of DOM elements: Top-Left, Top-Right, Bottom-Left, Bottom-Right
+        const renderOrder = [0, 1, 2, 3];
+
+        for (let idx of renderOrder) {
           const cellDiv = document.createElement('div');
           cellDiv.className = 'cell';
-
-          let cellScore = Math.min(2.5, Math.max(0, remainingBoxScore - (c * 2.5)));
-
-          if (cellScore >= 2.5) {
-            cellDiv.innerText = '✕';
-          } else if (cellScore > 0) {
-            cellDiv.innerText = '/';
-          } else {
-            cellDiv.innerText = '';
-          }
-
+          cellDiv.innerText = slotSymbols[idx];
           boxDiv.appendChild(cellDiv);
         }
+
         container.appendChild(boxDiv);
       }
     }
